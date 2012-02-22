@@ -55,7 +55,6 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	DNSLogMethod
 	if ([delegate shouldBeDismissedFor:touches withEvent:event])
 		[delegate dismissModal];
 }
@@ -64,23 +63,40 @@
 
 @implementation SNPopupView
 
-@synthesize title, image, contentView, delegate;
+@synthesize title, image, contentView, delegate, direction;
 
 #pragma mark - Prepare
 
-- (void)setupGradientColors {		
+- (void)setupGradientColors {	
+//    CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+//	CGFloat colors[] =
+//	{
+//		255 / 255.0, 255.0 / 255.0, 255.0 / 255.0, ALPHA,
+//		230.0 / 255.0, 230.0 / 255.0, 230 / 255.0, ALPHA,
+//	};
+//	gradient = CGGradientCreateWithColorComponents(rgb, colors, NULL, sizeof(colors)/(sizeof(colors[0])*4));
+//	
+//	CGFloat colors2[] =
+//	{
+//		200.0 / 255.0, 200.0 / 255.0, 200.0 / 255.0, ALPHA,
+//		180 / 255.0, 180 / 255.0, 180 / 255.0, ALPHA,
+//	};
+//	gradient2 = CGGradientCreateWithColorComponents(rgb, colors2, NULL, sizeof(colors2)/(sizeof(colors2[0])*4));
+//	CGColorSpaceRelease(rgb);
+
 	CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
 	CGFloat colors[] =
 	{
-		155.0 / 255.0, 155.0 / 255.0, 155.0 / 255.0, ALPHA,
-		70.0 / 255.0, 70.0 / 255.0, 70.0 / 255.0, ALPHA,
+		50.0 / 255.0, 50.0 / 255.0, 50.0 / 255.0, ALPHA,
+        70.0 / 255.0, 70 / 255.0, 70 / 255.0, ALPHA,
+
 	};
 	gradient = CGGradientCreateWithColorComponents(rgb, colors, NULL, sizeof(colors)/(sizeof(colors[0])*4));
 	
 	CGFloat colors2[] =
 	{
+		70.0 / 255.0, 70.0 / 255.0, 70.0 / 255.0, ALPHA,
 		20.0 / 255.0, 20.0 / 255.0, 20.0 / 255.0, ALPHA,
-		0.0 / 255.0, 0.0 / 255.0, 0.0 / 255.0, ALPHA,
 	};
 	gradient2 = CGGradientCreateWithColorComponents(rgb, colors2, NULL, sizeof(colors2)/(sizeof(colors2[0])*4));
 	CGColorSpaceRelease(rgb);
@@ -185,13 +201,15 @@
 }
 
 - (void)showAtPoint:(CGPoint)p inView:(UIView*)inView animated:(BOOL)animated {
+    if (direction == SNPopupViewAny)
+    {
 	if ((p.y - contentBounds.size.height - POPUP_ROOT_SIZE.height - 2 * CONTENT_OFFSET.height - SHADOW_OFFSET.height) < 0) {
 		direction = SNPopupViewDown;
 	}
 	else {
 		direction = SNPopupViewUp;
 	}
-	
+	}
 	if (direction & SNPopupViewUp) {
 
 		pointToBeShown = p;
@@ -374,9 +392,9 @@
 - (CAKeyframeAnimation*)getPositionAnimationForPopup {
 	
 	float r1 = 0.1;
-	float r2 = 1.4;
+	float r2 = 1.15;
 	float r3 = 1;
-	float r4 = 0.8;
+	float r4 = 0.9;
 	float r5 = 1;
 	
 	float y_offset =  (popupRect.size.height/2 - POPUP_ROOT_SIZE.height);
@@ -415,13 +433,21 @@
 								[NSValue valueWithCATransform3D:tm4],
 								[NSValue valueWithCATransform3D:tm5],
 								nil];
-	positionAnimation.keyTimes = [NSArray arrayWithObjects:
+//	positionAnimation.keyTimes = [NSArray arrayWithObjects:
+//								  [NSNumber numberWithFloat:0.0],
+//								  [NSNumber numberWithFloat:0.2],
+//								  [NSNumber numberWithFloat:0.4],
+//								  [NSNumber numberWithFloat:0.7], 
+//								  [NSNumber numberWithFloat:1.0],
+//								  nil];
+    positionAnimation.keyTimes = [NSArray arrayWithObjects:
 								  [NSNumber numberWithFloat:0.0],
-								  [NSNumber numberWithFloat:0.2],
 								  [NSNumber numberWithFloat:0.4],
+								  [NSNumber numberWithFloat:0.55],
 								  [NSNumber numberWithFloat:0.7], 
 								  [NSNumber numberWithFloat:1.0],
 								  nil];
+
 	return positionAnimation;
 }
 
@@ -598,7 +624,6 @@
 #pragma mark - Override
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	DNSLogMethod
 	
 	if ([self shouldBeDismissedFor:touches withEvent:event] && peekView != nil) {
 		[self dismissModal];
@@ -661,7 +686,6 @@
 #pragma mark - dealloc
 
 - (void)dealloc {
-	DNSLogMethod
 	CGGradientRelease(gradient);
 	CGGradientRelease(gradient2);
 	

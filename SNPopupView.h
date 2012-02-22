@@ -33,17 +33,17 @@
 //#define _CONFIRM_REGION
 
 #define SHADOW_OFFSET					CGSizeMake(10, 10)
-#define CONTENT_OFFSET					CGSizeMake(10, 10)
-#define POPUP_ROOT_SIZE					CGSizeMake(20, 10)
+#define CONTENT_OFFSET					CGSizeMake(2, 2)
+#define POPUP_ROOT_SIZE					CGSizeMake(30, 20)
 
 #define HORIZONTAL_SAFE_MARGIN			30
 
-#define POPUP_ANIMATION_DURATION		0.3
+#define POPUP_ANIMATION_DURATION		0.6
 #define DISMISS_ANIMATION_DURATION		0.2
 
 #define DEFAULT_TITLE_SIZE				20
 
-#define ALPHA							0.6
+#define ALPHA							0.9
 
 #define BAR_BUTTON_ITEM_UPPER_MARGIN	10
 #define BAR_BUTTON_ITEM_BOTTOM_MARGIN	5
@@ -51,6 +51,7 @@
 @class TouchPeekView;
 
 typedef enum {
+    SNPopupViewAny      = 0,
 	SNPopupViewUp		= 1,
 	SNPopupViewDown		= 2,
 	SNPopupViewRight	= 1 << 8,
@@ -100,7 +101,7 @@ typedef enum {
 @property (nonatomic, readonly) UIImage *image;
 @property (nonatomic, readonly) UIView *contentView;
 @property (nonatomic, assign) id <SNPopupViewModalDelegate> delegate;
-
+@property (nonatomic, assign) SNPopupViewDirection direction;
 - (id)initWithString:(NSString*)newValue withFontOfSize:(float)newFontSize;
 - (id)initWithString:(NSString*)newValue;
 - (id)initWithImage:(UIImage*)newImage;
